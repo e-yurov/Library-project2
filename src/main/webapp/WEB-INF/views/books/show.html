@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Book</title>
+</head>
+<body>
+    <p th:text="${book.toString()}">book</p>
+    <div th:if="${book.isAvailable()}">
+        <p>This book is available. Who should get it?</p>
+        <form th:method="PATCH" th:action="@{/books/{id}/holder(id=${book.getId()})}" th:object="${newHolder}">
+            <label for="person">Choose a person:</label>
+            <select id="person" th:field="*{id}">
+                <option th:each="person : ${people}" th:value="${person.getId()}"
+                        th:text="${person.getFullName()}"></option>
+            </select>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+
+    <div th:if="${!book.isAvailable()}">
+        <p th:text="'Current holder: ' + ${book.getHolder().getFullName()}"></p>
+        <form th:method="DELETE" th:action="@{/books/{id}/holder(id=${book.getId()})}">
+            <button type="submit">Set available</button>
+        </form>
+    </div>
+    <hr>
+
+    <a th:href="@{/books/{id}/edit(id=${book.getId()})}"><button>Edit</button></a>
+    <form th:method="DELETE" th:action="@{/books/{id}(id=${book.getId()})}">
+        <button type="submit">Delete</button>
+    </form>
+</body>
+</html>
